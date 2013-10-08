@@ -81,34 +81,34 @@ public class TestGithubCom {
 	/**
 	 * Navigate to main page and detect title
 	 */
-	@Test
-	public void testGitHubMainpage()
-	{
-		Assert.assertTrue(webDriver.getTitle().startsWith(page.title), 
-				String.format("Page title is NOT prefixed with %s", 
-							  page.title));
-	}
-	
+//	@Test
+//	public void testGitHubMainpage()
+//	{
+//		Assert.assertTrue(webDriver.getTitle().startsWith(page.title), 
+//				String.format("Page title is NOT prefixed with %s", 
+//							  page.title));
+//	}
+//	
 	/**
 	 * Navigate to main page and attempt to navigate to sign in page by clicking
 	 * on Sign In elements, test title again and initialize the SignIn PageObject
 	 */
-	@Test
-	public void testGitHubSignInButton()
-	{
-		Assert.assertTrue(page.webSignInButton.size() == page.signInElements, 
-							"More than one signin class object");
-		
-		page.clickOnSignInButton();
-		WebDriverWait wait = new WebDriverWait(webDriver, 10);
-		boolean hasTitle = wait.until(ExpectedConditions.titleContains(page.title));
-		Assert.assertEquals(hasTitle, true, 
-							String.format("Title does not have %s in the name", page.title));
-		// If we can init the sign in page, components match up and test can pass
-		SignInPage signInPage = PageFactory.initElements(webDriver, SignInPage.class);
-		Assert.assertTrue(signInPage != null);
-	}
-	
+//	@Test
+//	public void testGitHubSignInButton()
+//	{
+//		Assert.assertTrue(page.webSignInButton.size() == page.signInElements, 
+//							"More than one signin class object");
+//		
+//		page.clickOnSignInButton();
+//		WebDriverWait wait = new WebDriverWait(webDriver, 10);
+//		boolean hasTitle = wait.until(ExpectedConditions.titleContains(page.title));
+//		Assert.assertEquals(hasTitle, true, 
+//							String.format("Title does not have %s in the name", page.title));
+//		// If we can init the sign in page, components match up and test can pass
+//		SignInPage signInPage = PageFactory.initElements(webDriver, SignInPage.class);
+//		Assert.assertTrue(signInPage != null);
+//	}
+//	
 	/**
 	 * Navigate to sign in page, fill out fields with data gathered from BeforeSuite 
 	 * decorated method and attempt to sign on using login form
@@ -129,6 +129,13 @@ public class TestGithubCom {
 		signInPage.enterUserName(username);
 		signInPage.enterPassword(password);
 		signInPage.signIn();
+		webDriver.navigate().to(webDriver.getCurrentUrl() + username);
+		GithubUserPage userPage = PageFactory.initElements(webDriver, GithubUserPage.class);
+		userPage.clickRepositoryTab(); // Show Click on tab showing repositories
+		wait = new WebDriverWait(webDriver, 10);
+//		wait.until(ExpectedConditions.presenceOfElementLocated(By.className("tabnav-tabs")));
+		GithubRepositoryPage repos = PageFactory.initElements(webDriver, GithubRepositoryPage.class);
+		Assert.assertTrue(repos != null);
 	}
 	
 //	@Test
