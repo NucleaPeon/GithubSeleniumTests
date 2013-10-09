@@ -18,7 +18,7 @@ import org.openqa.selenium.support.FindBy;
  */
 public class GithubDashboard {
 	
-	/**
+	/**	
 	 * This variable will not be null if the elements are found -- aka
 	 * the uesr has been logged in successfully.
 	 * WebElement is found by class name "logged_in"

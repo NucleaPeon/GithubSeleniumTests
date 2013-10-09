@@ -3,6 +3,9 @@
  */
 package com.seleniumtests.github.tests;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -133,9 +136,15 @@ public class TestGithubCom {
 		GithubUserPage userPage = PageFactory.initElements(webDriver, GithubUserPage.class);
 		userPage.clickRepositoryTab(); // Show Click on tab showing repositories
 		wait = new WebDriverWait(webDriver, 10);
-//		wait.until(ExpectedConditions.presenceOfElementLocated(By.className("tabnav-tabs")));
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.className("repolist")));
 		GithubRepositoryPage repos = PageFactory.initElements(webDriver, GithubRepositoryPage.class);
 		Assert.assertTrue(repos != null);
+		
+		List<Repo> repoList = new ArrayList<Repo>(repos.div_repolist.size()); // Init to size of elements found
+		List<String> repo_names = repos.getRepositories();
+		for ( String repname : repo_names )
+			repoList.add(new Repo("", repname, 0));
+		
 	}
 	
 //	@Test
@@ -163,5 +172,20 @@ public class TestGithubCom {
 		this.username = null;
 		this.password = null;
 		System.gc(); // Force garbage collector to remove references and data to name & pw
+	}
+	
+	protected class Repo
+	{
+		String language = null;
+		String reponame = null;
+		int commits = -1;
+		
+		public Repo(String language, String name, int commits)
+		{
+			this.language = language;
+			this.reponame = name;
+			this.commits = commits;
+		}
+		
 	}
 }
