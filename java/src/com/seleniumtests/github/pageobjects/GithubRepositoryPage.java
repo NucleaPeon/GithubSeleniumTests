@@ -38,26 +38,36 @@ public class GithubRepositoryPage {
 	 *                     
 	 * @return WebElement - WebElement at the end of the classNames arrays
 	 */
-	private WebElement recursiveWebElementByClass(WebElement we, String[] classNames)
-	{
-		if (classNames.length == 1) return we.findElement(By.className(classNames[0])); 
-		else {
-			return recursiveWebElementByClass(we.findElement(
-					By.className(classNames[0])),
-					Arrays.copyOfRange(classNames, 1, classNames.length));
-		}
-	}
+//	private WebElement recursiveWebElementByClass(WebElement we, String[] classNames)
+//	{
+//		if (classNames.length == 1) return we.findElement(By.className(classNames[0])); 
+//		else {
+//			return recursiveWebElementByClass(we.findElement(
+//					By.className(classNames[0])),
+//					Arrays.copyOfRange(classNames, 1, classNames.length));
+//		}
+//	}
 	
-	public List<String> getRepositories()
-	{
-		List<String> a = new ArrayList<String>(10);
-		System.out.println(String.format("div_repolist %s", div_repolist.toString()));
-		WebElement repo = div_repolist.get(0);
-		List<WebElement> repoItems = repo.findElements(By.className("source"));
-		System.out.println("Repository Items Under 'repolist' class " + repoItems.size());
-		String[] strArray = {"repo-stats", "language"};
-		a.add(recursiveWebElementByClass(repoItems.get(0), strArray).getText());
-		return a;
-	}
+//	public List<String> getRepositoryLanguages()
+//	{	
+//		
+//		List<String> a = new ArrayList<String>(6);
+////		String[] strArray = {"repo-stats", "language"};
+////		for ( WebElement repoItem : ) {
+////			a.add(recursiveWebElementByClass(repoItem, strArray).getText());
+////			System.out.println(a.get(a.size() - 1));
+////		}
+////		return a;
+//		
+//	}
+//	
+//
+//	public List<String> getRepositoryNames() {
+//		List<String> a = new ArrayList<String>(div_repolist.size());
+//		String[] strArray = {"source", "repolist-name"};
+//		for ( WebElement repoItem : div_repolist )
+//			a.add(recursiveWebElementByClass(repoItem, strArray).getCssValue("a"));
+//		return a;
+//	}
 	
 }

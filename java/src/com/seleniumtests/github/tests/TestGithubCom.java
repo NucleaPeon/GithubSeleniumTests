@@ -3,6 +3,7 @@
  */
 package com.seleniumtests.github.tests;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -45,6 +46,8 @@ public class TestGithubCom {
 	private String username = null; // Username for tests
 	private String password = null; // Password for tests
 	
+	public static final String GITHUB = "http://github.com";
+	
 	/**
 	 * Request username and password, store for test suite
 	 */
@@ -67,7 +70,7 @@ public class TestGithubCom {
 	public void setUp()
 	{
 		webDriver = new FirefoxDriver();
-		webDriver.navigate().to("http://github.com");
+		webDriver.navigate().to(GITHUB);
 		page = PageFactory.initElements(webDriver, IndexPage.class);
 		Assert.assertTrue(page != null, "Page is invalid (null)");
 	}
@@ -139,11 +142,46 @@ public class TestGithubCom {
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.className("repolist")));
 		GithubRepositoryPage repos = PageFactory.initElements(webDriver, GithubRepositoryPage.class);
 		Assert.assertTrue(repos != null);
-		
-		List<Repo> repoList = new ArrayList<Repo>(repos.div_repolist.size()); // Init to size of elements found
-		List<String> repo_names = repos.getRepositories();
-		for ( String repname : repo_names )
-			repoList.add(new Repo("", repname, 0));
+		List<WebElement> repoItems = repos.div_repolist.get(0).findElements(By.cssSelector("li"));
+		List<Repo> myRepos = new ArrayList<Repo>(10);
+		Repo r = null;
+		for ( WebElement we : repoItems )
+		{
+			r = new Repo("", "", 0);
+			List<WebElement> repostats = we.findElements(By.cssSelector("ul[class='repo-stats']"));
+			if ( repostats.size() > 0 )
+			{
+				for ( WebElement rs : repostats) 
+				{
+					r.language = rs.getText();
+				}
+			}
+			repostats = we.findElements(By.cssSelector("h3[class='repolist-name']"));
+			if ( repostats.size() > 0 )
+			{
+				for ( WebElement rs : repostats) 
+				{
+					r.reponame = rs.getText();
+				}
+			}
+			
+			repostats = we.findElements(By.cssSelector("h3[class='repolist-name']"));
+			if ( repostats.size() > 0 )
+			{
+				for ( WebElement rs : repostats) 
+				{
+					r.url = String.format("%s/%s/%s", GITHUB, username, r.reponame);
+				}
+			}
+			
+			if (r.reponame != "")
+				myRepos.add(r);
+		}
+		for ( Repo reps : myRepos )
+		{
+			System.out.println(reps);
+		}
+			
 		
 	}
 	
@@ -178,14 +216,33 @@ public class TestGithubCom {
 	{
 		String language = null;
 		String reponame = null;
-		int commits = -1;
+		String url 		= null;
+		int commits 	= -1;
 		
 		public Repo(String language, String name, int commits)
 		{
+			this.url = "";
 			this.language = language;
 			this.reponame = name;
 			this.commits = commits;
 		}
 		
+		public Repo(String url, String language, String name, int commits)
+		{
+			this.url = url;
+			this.language = language;
+			this.reponame = name;
+			this.commits = commits;
+		}
+		
+		/**
+		 * Override default toString method to determine value of repository
+		 */
+		public String toString()
+		{
+			return String.format("Repository <%s>: Written in %s with %s commits, [%s]", this.reponame, this.language, "" + this.commits, this.url);
+		}
 	}
+	
+	
 }
